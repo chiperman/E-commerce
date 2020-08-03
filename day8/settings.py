@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'rx$8@5%mch)e=2x%_j7cfvvd6*ml%-93kb(cz!8x8b$$#e=#yv'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -75,7 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'day8.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -85,7 +82,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -105,7 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -119,7 +114,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -128,7 +122,7 @@ STATICFILES_DIRS = (
     os.path.join(os.path.join(BASE_DIR, 'static')),
 )
 
-#---------------DjangoRESTFramework配置---------------------------
+# ---------------DjangoRESTFramework配置---------------------------
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -136,12 +130,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-
-#----------------跨域访问配置------------------------------------
+# ----------------跨域访问配置------------------------------------
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = ()
-
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -168,22 +160,20 @@ CORS_ALLOW_HEADERS = (
     'Pragma',
 )
 
+# --------SimpleUI配置区 ---------------
 
-#--------SimpleUI配置区 ---------------
 
-
-SIMPLEUI_HOME_INFO = False      #服务器信息
-SIMPLEUI_HOME_QUICK = True     #快速操作
-SIMPLEUI_HOME_ACTION = False    #最近动作
-SIMPLEUI_ANALYSIS = False       #收集分析，一天只上报一次分析数据。默认为True
-
+SIMPLEUI_HOME_INFO = False  # 服务器信息
+SIMPLEUI_HOME_QUICK = True  # 快速操作
+SIMPLEUI_HOME_ACTION = False  # 最近动作
+SIMPLEUI_ANALYSIS = False  # 收集分析，一天只上报一次分析数据。默认为True
 
 SIMPLEUI_LOADING = False
 
 SIMPLEUI_CONFIG = {
     'system_keep': False,
-    'menu_display': ['图书管理', '权限认证','首页管理'],      # 开启排序和过滤功能, 不填此字段为默认排序和全部显示, 空列表[] 为全部不显示.
-    'dynamic': True,    # 设置是否开启动态菜单, 默认为False. 如果开启, 则会在每次用户登陆时动态展示菜单内容
+    'menu_display': ['图书管理', '后台用户权限认证', '用户及商品管理'],  # 开启排序和过滤功能, 不填此字段为默认排序和全部显示, 空列表[] 为全部不显示.
+    'dynamic': True,  # 设置是否开启动态菜单, 默认为False. 如果开启, 则会在每次用户登陆时动态展示菜单内容
     'menus': [{
         'app': 'books',
         'name': '图书管理',
@@ -193,23 +183,80 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-book',
             'url': 'books/book/'
         }]
-    },{
+    }, {
         'app': 'auth',
-        'name': '权限认证',
+        'name': '后台用户权限认证',
         'icon': 'fas fa-user-shield',
         'models': [{
             'name': '用户',
             'icon': 'fa fa-user',
             'url': 'auth/user/'
         }]
-    },{
+    }, {
         'app': 'books',
-        'name': '首页管理',
+        'name': '用户及商品管理',
         'icon': 'fas fa-university',
-        'models': [{
-            'name': '轮播图',
-            'icon': 'fa fa-user',
-            'url': 'books/banner/'
-        }]
+        'models': [
+            {
+                'name': '轮播图',
+                'icon': 'fa fa-user',
+                'url': 'books/banner/'
+            },
+            {
+                'name': '用户表',
+                'icon': 'fa fa-user',
+                'url': 'books/user/'
+            },
+            {
+                'name': '用户地址表',
+                'icon': 'fa fa-user',
+                'url': 'books/address/'
+            },
+            {
+                'name': '用户token表',
+                'icon': 'fa fa-user',
+                'url': 'books/token/'
+            },
+            {
+                'name': '商品信息表',
+                'icon': 'fa fa-user',
+                'url': 'books/goods/'
+            },
+            {
+                'name': '商品分类表',
+                'icon': 'fa fa-user',
+                'url': 'books/category/'
+            },
+            {
+                'name': '购物车表',
+                'icon': 'fa fa-user',
+                'url': 'books/cart/'
+            },
+            {
+                'name': '订单表',
+                'icon': 'fa fa-user',
+                'url': 'books/mall_order/'
+            },
+            {
+                'name': '订单项表',
+                'icon': 'fa fa-user',
+                'url': 'books/order_item/'
+            },
+            {
+                'name': '订单地址表',
+                'icon': 'fa fa-user',
+                'url': 'books/order_address/'
+            },
+            {
+                'name': '首页广告表',
+                'icon': 'fa fa-user',
+                'url': 'books/banner/'
+            },
+            {
+                'name': '收藏表',
+                'icon': 'fa fa-user',
+                'url': 'books/user_collection/'
+            },
+        ]
     }]
 }
