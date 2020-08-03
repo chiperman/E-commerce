@@ -76,8 +76,8 @@ class Banner(models.Model):
 # 收藏表
 class User_collection(models.Model):
     collection_id = models.IntegerField(auto_created=True, primary_key=True)
-    user_id = models.CharField(max_length=100)
-    order_id = models.CharField(max_length=100)
+    # user_id = models.CharField(max_length=100)
+    # order_id = models.CharField(max_length=100)
     is_deleted = models.IntegerField(default=0)
 
     class Meta:

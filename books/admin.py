@@ -195,9 +195,8 @@ class BannerAdmin(admin.ModelAdmin):
 
 
 # 收藏表
-class CollectionAdmin(admin.ModelAdmin):
-    list_display = ['collection_id', 'user_id',
-                    'order_id', 'is_deleted']
+class UserCollectionAdmin(admin.ModelAdmin):
+    list_display = ['collection_id', 'is_deleted']
     fieldsets = [
         ('是否删除', {'fields': ['is_deleted']}),
     ]
@@ -220,4 +219,4 @@ admin.site.register(Mall_order, OrderAdmin)
 admin.site.register(Order_item, Order_itemAdmin)
 admin.site.register(Order_address, Order_addressAdmin)
 admin.site.register(Banner, BannerAdmin)
-admin.site.register(User_collection, CollectionAdmin)
+admin.site.register(User_collection, UserCollectionAdmin)
