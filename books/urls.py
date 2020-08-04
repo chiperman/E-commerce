@@ -5,11 +5,13 @@ from books import views
 urlpatterns = [
     path('books/book/<name>/', views.BookViewSet.as_view({'get': 'findBookByTitle'})),
     path('books/banner/', views.BannerViewSet.as_view({'get': 'findBanners'})),
+    path('books/orderList/', views.MallOrderViewSet.as_view({'get': 'findOrderList'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
-router.register(r"banner/", views.BannerViewSet)
+router.register(r"banner", views.BannerViewSet)
 router.register(r"books", views.BookViewSet)
+router.register(r"orderList", views.MallOrderViewSet)
 
 urlpatterns += router.urls
 

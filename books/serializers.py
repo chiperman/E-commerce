@@ -16,8 +16,9 @@ class BannerSerializer(serializers.ModelSerializer):
         fields = ['carousel_id', 'carousel_url', 'redirect_url', 'carousel_rand']
 
 
-class Mall_orderSerializer(serializers.ModelSerializer):
+class MallOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mall_order
+        # fields = "__all__"
         fields = ['order_no', 'total_price', 'pay_status', 'pay_type', 'order_status', 'extra_info', 'is_deleted',
                   'create_time']
