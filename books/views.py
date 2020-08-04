@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
-from .serializers import BookSerializer, BannerSerializer
-from .models import Book, Banner
+from .serializers import BookSerializer, BannerSerializer, MallOrderSerializer
+from .models import Book, Banner, Mall_order
 
 
 class BookViewSet(ModelViewSet):
@@ -31,3 +31,8 @@ class BannerViewSet(ModelViewSet):
             return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
+
+
+class MallOrderViewSet(ModelViewSet):
+    queryset = Mall_order.objects.all()
+    serializer_class = MallOrderSerializer
