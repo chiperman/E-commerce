@@ -110,7 +110,7 @@ class Cart(models.Model):
         db_table = 'shopping_cart'
 
 
-# zzx
+# zzx code
 
 # 订单表
 class Mall_order(models.Model):
