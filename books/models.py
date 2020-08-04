@@ -15,7 +15,7 @@ class Book(models.Model):
 
 # 用户表
 class User(models.Model):
-    user_id = models.IntegerField(auto_created=True, primary_ky=True)
+    user_id = models.IntegerField(auto_created=True, primary_key=True)
     login_name = models.CharField(max_length=100)
     user_pwd = models.CharField(max_length=100)
     nick_name = models.CharField(max_length=100)
@@ -110,7 +110,7 @@ class Cart(models.Model):
         db_table = 'shopping_cart'
 
 
-# zzx code
+# zzx
 
 # 订单表
 class Mall_order(models.Model):
