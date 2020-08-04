@@ -11,11 +11,11 @@ class Book(models.Model):
         db_table = 'book'
 
 
-# zl
+# zl code
 
 # 用户表
 class User(models.Model):
-    user_id = models.IntegerField(auto_created=True, primary_key=True)
+    user_id = models.IntegerField(auto_created=True, primary_ky=True)
     login_name = models.CharField(max_length=100)
     user_pwd = models.CharField(max_length=100)
     nick_name = models.CharField(max_length=100)
