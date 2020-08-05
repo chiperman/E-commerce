@@ -16,8 +16,15 @@ urlpatterns = [
     path('books/category/', views.CategoryViewSet),
     path('books/cart/', views.CartViewSet),
 
-    # 测试数据
+    # 首页
     path('goods/home/', views.HomeViewSet.as_view({'get': 'getHome'})),
+    # 搜索
+    path('search/', views.SerchViewSet.as_view({'get': 'search'})),
+    # 注册
+    path('user/register/', views.RegisterViewSet.as_view({'post': 'register'})),
+    # 登录
+    path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
+
 ]
 
 
