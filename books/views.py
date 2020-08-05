@@ -66,16 +66,6 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(methods=['GET'], detail=False, url_path="user/queryCollection/")
-    def getQueryCollection(self, request):
-        queryset = Goods.objects.values('is_collection')
-
-        if queryset != '':
-            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
-        else:
-            return JsonResponse({'status': 500, 'message': '链接有误'})
-
-
 
 # 地址表
 class AddressViewSet(ModelViewSet):
@@ -107,34 +97,76 @@ class CartViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
 
+# 主页数据展示
 class HomeViewSet(ModelViewSet):
-    queryset1 = Banner.objects.filter(is_deleted=0)
-    queryset2 = Goods.objects.filter(goods_sell_status=1)
 
-    @action(methods=['GET'], detail=False, url_path="goods/home/")
+    @action(methods=['POST'], detail=False, url_path="goods/home/")
     def getHome(self, request):
         queryset1 = Banner.objects.values().filter(is_deleted=0)
-        queryset2 = Goods.objects.values().filter(goods_sell_status=1)
 
+        queryset2 = Goods.objects.values()
+        # 数量多于30的话则取前30
+        if len(queryset2) > 30:
+            queryset2 = queryset2[0:30]
+        print(len(queryset2))
         result = {'mall_carouse': list(queryset1),
                   'goods_info': list(queryset2)}
-        # print(result)
-        # print(JsonResponse(list(queryset), safe=False))
+        # print(request.data)
         if queryset1 != '' or queryset2 != '':
             return JsonResponse({'status': 200, 'data': result}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
-    @action(methods=['GET'], detail=False, url_path="goods/goodsDetails/")
-    def getGoodsDetails(self, request):
-        queryset = Goods.objects.values('goods_id', 'goods_name', 'goods_intro', 'goods_category', 'goods_cover_img',
-                                        'goods_detail_content', 'original_price', 'selling_price', 'stock_num', 'tag',
-                                        'goods_sell_status')
 
-        if queryset != '':
-            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+# 搜索展示
+class SerchViewSet(ModelViewSet):
+    def search(self, request):
+        print(request.data)
+        msg = request.data['msg']
+        goods = Goods.objects.values().filter(goods_name__contains=msg)
+        # 数量多于20的话则取前二十
+        if len(goods) > 20:
+            goods = goods[0:20]
+        print(len(goods))
+        if goods != '':
+            return JsonResponse({'status': 200, 'data': list(goods)}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
 
+# 注册
+class RegisterViewSet(ModelViewSet):
 
+    def register(self, request):
+        print(request.data)
+        name = request.data['name']
+        pwd = request.data['pwd']
+        user = User.objects.values().filter(login_name=name)
+        # 判断用户是否已经存在
+        if user:
+            return JsonResponse({'status': 200, 'data': 0}, safe=False)
+        # 存储到数据库中
+        else:
+            print(1111)
+            user = User.objects.create(login_name=user, user_pwd=pwd, nick_name="铁蛋", introduce="我是hhh", is_deleted=0)
+            print(222)
+            print(user.user_id)
+            user.save()
+            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+
+
+# 登录
+class LoginViewSet(ModelViewSet):
+
+    def login(self, request):
+        print(request.data)
+        name = request.data['name']
+        pwd = request.data['pwd']
+        user = User.objects.values().filter(login_name=name, user_pwd=pwd)
+        # 判断用户是否存在
+        if user:
+            print("账号密码正确")
+            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+        else:
+            print("账号密码错误")
+            return JsonResponse({'status': 500, 'data': 0}, safe=False)

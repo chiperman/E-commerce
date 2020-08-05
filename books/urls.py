@@ -16,11 +16,17 @@ urlpatterns = [
     path('books/category/', views.CategoryViewSet),
     path('books/cart/', views.CartViewSet),
 
-    # 测试数据
+    # 首页
     path('goods/home/', views.HomeViewSet.as_view({'get': 'getHome'})),
-    path('goods/goodsDetails/', views.HomeViewSet.as_view({'get': 'getGoodsDetails'})),
-    path('user/queryCollection/', views.UserViewSet.as_view({'get': 'getQueryCollection'})),
+    # 搜索
+    path('search/', views.SerchViewSet.as_view({'get': 'search'})),
+    # 注册
+    path('user/register/', views.RegisterViewSet.as_view({'post': 'register'})),
+    # 登录
+    path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
+
 ]
+
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
 router.register(r"banner", views.BannerViewSet)
@@ -35,6 +41,7 @@ router.register(r"token", views.TokenViewSet)
 router.register(r"goods", views.GoodsViewSet)
 router.register(r"category", views.CategoryViewSet)
 router.register(r"cart", views.CartViewSet)
+
 
 urlpatterns += router.urls
 
