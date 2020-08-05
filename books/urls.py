@@ -18,6 +18,8 @@ urlpatterns = [
 
     # 测试数据
     path('goods/home/', views.HomeViewSet.as_view({'get': 'getHome'})),
+    path('goods/goodsDetails/', views.HomeViewSet.as_view({'get': 'getGoodsDetails'})),
+    path('user/queryCollection/', views.UserViewSet.as_view({'get': 'getQueryCollection'})),
 ]
 
 
