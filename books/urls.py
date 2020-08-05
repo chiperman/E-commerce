@@ -22,7 +22,6 @@ urlpatterns = [
     path('user/queryCollection/', views.UserViewSet.as_view({'get': 'getQueryCollection'})),
 ]
 
-
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
 router.register(r"banner", views.BannerViewSet)
 router.register(r"books", views.BookViewSet)
