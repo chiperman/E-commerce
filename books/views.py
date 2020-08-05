@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
-from .serializers import BookSerializer, BannerSerializer, MallOrderSerializer
-from .models import Book, Banner, Mall_order
+from .serializers import BookSerializer, BannerSerializer, MallOrderSerializer, OrderItemSerializer, \
+    OrderAddressSerializer, UserCollectionSerializer
+from .models import Book, Banner, Mall_order, Order_item, Order_address, User_collection
 
 
 class BookViewSet(ModelViewSet):
@@ -18,6 +19,25 @@ class BookViewSet(ModelViewSet):
             return JsonResponse({'status': 1, 'message': '书名已存在'})
 
 
+# 订单表
+class MallOrderViewSet(ModelViewSet):
+    queryset = Mall_order.objects.all()
+    serializer_class = MallOrderSerializer
+
+
+# 订单项表
+class OrderItemViewSet(ModelViewSet):
+    queryset = Order_item.objects.all()
+    serializer_class = OrderItemSerializer
+
+
+# 订单地址表
+class OrderAddressViewSet(ModelViewSet):
+    queryset = Order_address.objects.all()
+    serializer_class = OrderAddressSerializer
+
+
+# 首页广告图
 class BannerViewSet(ModelViewSet):
     queryset = Banner.objects.filter(is_deleted=0)
     # print(queryset)
@@ -33,6 +53,7 @@ class BannerViewSet(ModelViewSet):
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
 
-class MallOrderViewSet(ModelViewSet):
-    queryset = Mall_order.objects.all()
-    serializer_class = MallOrderSerializer
+# 收藏表
+class UserCollectionViewSet(ModelViewSet):
+    queryset = User_collection.objects.all()
+    serializer_class = UserCollectionSerializer
