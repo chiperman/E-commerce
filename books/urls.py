@@ -9,6 +9,15 @@ urlpatterns = [
     path('books/orderList/', views.OrderItemViewSet.as_view({'get': 'findOrderList'})),
     path('books/orderAddress/', views.OrderAddressViewSet.as_view({'get': 'findOrderAddress'})),
     path('books/userCollection/', views.UserCollectionViewSet.as_view({'get': 'findUserCollection'})),
+    path('books/user/', views.UserViewSet),
+    path('books/address/', views.AddressViewSet),
+    path('books/token/', views.TokenViewSet),
+    path('books/goods/', views.GoodsViewSet),
+    path('books/category/', views.CategoryViewSet),
+    path('books/cart/', views.CartViewSet),
+
+    # 测试数据
+    path('goods/home/', views.HomeViewSet.as_view({'get': 'getHome'})),
 ]
 
 
@@ -19,6 +28,13 @@ router.register(r"order", views.MallOrderViewSet)
 router.register(r"orderList", views.OrderItemViewSet)
 router.register(r"orderAddress", views.OrderAddressViewSet)
 router.register(r"userCollection", views.UserCollectionViewSet)
+router.register(r"user", views.UserViewSet)
+router.register(r"address", views.AddressViewSet)
+router.register(r"token", views.TokenViewSet)
+router.register(r"goods", views.GoodsViewSet)
+router.register(r"category", views.CategoryViewSet)
+router.register(r"cart", views.CartViewSet)
+
 
 urlpatterns += router.urls
 
