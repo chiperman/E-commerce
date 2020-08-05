@@ -66,6 +66,16 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    @action(methods=['GET'], detail=False, url_path="user/queryCollection/")
+    def getQueryCollection(self, request):
+        queryset = Goods.objects.values('is_collection')
+
+        if queryset != '':
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '链接有误'})
+
+
 
 # 地址表
 class AddressViewSet(ModelViewSet):

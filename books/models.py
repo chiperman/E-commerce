@@ -68,6 +68,7 @@ class Goods(models.Model):
     goods_category = models.CharField(max_length=100)
     goods_cover_img = models.CharField(max_length=100)
     goods_carousel = models.CharField(max_length=100)
+    is_collection = models.IntegerField(default=0)
     goods_detail_content = models.CharField(max_length=100)
     original_price = models.FloatField()
     selling_price = models.FloatField()
