@@ -66,6 +66,16 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    @action(methods=['GET'], detail=False, url_path="user/queryCollection/")
+    def getQueryCollection(self, request):
+        queryset = Goods.objects.values('is_collection')
+
+        if queryset != '':
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '链接有误'})
+
+
 
 # 地址表
 class AddressViewSet(ModelViewSet):
@@ -108,9 +118,23 @@ class HomeViewSet(ModelViewSet):
 
         result = {'mall_carouse': list(queryset1),
                   'goods_info': list(queryset2)}
-        print(result)
+        # print(result)
         # print(JsonResponse(list(queryset), safe=False))
         if queryset1 != '' or queryset2 != '':
             return JsonResponse({'status': 200, 'data': result}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
+
+    @action(methods=['GET'], detail=False, url_path="goods/goodsDetails/")
+    def getGoodsDetails(self, request):
+        queryset = Goods.objects.values('goods_id', 'goods_name', 'goods_intro', 'goods_category', 'goods_cover_img',
+                                        'goods_detail_content', 'original_price', 'selling_price', 'stock_num', 'tag',
+                                        'goods_sell_status')
+
+        if queryset != '':
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '链接有误'})
+
+
+
