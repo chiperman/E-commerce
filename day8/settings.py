@@ -210,27 +210,27 @@ SIMPLEUI_CONFIG = {
             },
             {
                 'name': '用户地址表',
-                'icon': 'fa fa-user',
+                'icon': 'fas fa-ad',
                 'url': 'books/address/'
             },
             {
                 'name': '用户token表',
-                'icon': 'fa fa-user',
+                'icon': 'fab fa-airbnb',
                 'url': 'books/token/'
             },
             {
                 'name': '商品信息表',
-                'icon': 'fa fa-user',
+                'icon': 'fas fa-archive',
                 'url': 'books/goods/'
             },
             {
                 'name': '商品分类表',
-                'icon': 'fa fa-user',
+                'icon': 'fas fa-border-all',
                 'url': 'books/category/'
             },
             {
                 'name': '购物车表',
-                'icon': 'fa fa-user',
+                'icon': 'fas fa-baby-carriage',
                 'url': 'books/cart/'
             },
             {

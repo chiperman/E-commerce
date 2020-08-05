@@ -52,7 +52,8 @@ class BannerViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
-
+class ddd:
+    pass
 # 收藏表
 class UserCollectionViewSet(ModelViewSet):
     queryset = User_collection.objects.all()
