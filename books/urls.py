@@ -37,7 +37,6 @@ router.register(r"goods", views.GoodsViewSet)
 router.register(r"category", views.CategoryViewSet)
 router.register(r"cart", views.CartViewSet)
 
-
 urlpatterns += router.urls
 
 print(router.urls)
