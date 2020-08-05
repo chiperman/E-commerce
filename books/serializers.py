@@ -45,3 +45,46 @@ class UserCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_collection
         fields = "__all__"
+
+
+# 用户表
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
+
+
+# 地址表
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = "__all__"
+
+
+# Token表
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = "__all__"
+
+
+# 商品表
+class GoodsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goods
+        fields = "__all__"
+
+
+# 商品分类表
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
+# 购物车表
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = "__all__"
+
