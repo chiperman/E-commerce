@@ -34,6 +34,8 @@ urlpatterns = [
     path('u-action/addToShopCart/', views.CartViewSet.as_view({'post': 'addToShopCart'})),
     # 查询购物车数据
     path('user/checkShopCart/', views.checkShopCartViewSet.as_view({'post': 'ShopCart'})),
+    # 地址列表
+    path('user/addressList/', views.AddressListViewSet.as_view({'post': 'AddressList'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
