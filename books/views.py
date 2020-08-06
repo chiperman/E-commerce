@@ -116,7 +116,6 @@ class CartViewSet(ModelViewSet):
     serializer_class = CartSerializer
 
 
-
 def addToShopCart(self, request):
     user_id = request.data['user_id']
     goods_id = request.data['goods_id']
@@ -232,7 +231,19 @@ class UserInfoViewSet(ModelViewSet):
 class checkShopCartViewSet(ModelViewSet):
     def ShopCart(self, request):
         user_id = request.data['user_id']
-        queryset = Cart.objects.values('cart_item_id', 'user_id', 'goods_id', 'is_deleted').filter(user_id=user_id)
+        queryset = Cart.objects.values('cart_item_id', 'user_id', 'goods_id',
+                                       'is_deleted').filter(user_id=user_id)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class AddressListViewSet(ModelViewSet):
+    def AddressList(self, request):
+        user_id = request.data['user_id']
+        queryset = Address.objects.values('address_id', 'user_name', 'user_phone',
+                                          'default_flag', 'province_name', 'city_name').filter(user_id=user_id)
         if queryset:
             return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
         else:
