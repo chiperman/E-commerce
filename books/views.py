@@ -307,6 +307,7 @@ class orderListViewSet(ModelViewSet):
 
 class editAddressViewSet(ModelViewSet):
     def editAddress(self, request):
+        print(request.data)
         address_id = request.data['address_id']
         # user_id = request.data['user_id']
         user_name = request.data['user_name']
@@ -316,7 +317,9 @@ class editAddressViewSet(ModelViewSet):
         city_name = request.data['city_name']
         region_name = request.data['region_name']
         detail_address = request.data['detail_address']
+        print(address_id)
         queryset = Address.objects.values().filter(address_id=address_id)
+        print(queryset)
         # print(address_id, user_name, user_phone, default_flag, province_name, city_name, region_name, detail_address)
         if queryset:
             address = Address.objects.filter(address_id=address_id).update(user_name=user_name, user_phone=user_phone, default_flag=default_flag,
@@ -326,4 +329,5 @@ class editAddressViewSet(ModelViewSet):
             print("插入成功")
             return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
         else:
+            print("插入地址失败")
             return JsonResponse({'status': 500, 'message': '数据有误'})
