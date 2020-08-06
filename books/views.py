@@ -117,15 +117,14 @@ class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
-
-def addToShopCart(self, request):
-    user_id = request.data['user_id']
-    goods_id = request.data['goods_id']
-    is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
-    if is_addtocart:
-        return JsonResponse({'status': 200, 'data': 1}, safe=False)
-    else:
-        return JsonResponse({'status': 500, 'data': 0}, safe=False)
+    def addToShopCart(self, request):
+        user_id = request.data['user_id']
+        goods_id = request.data['goods_id']
+        is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
+        if is_addtocart:
+            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'data': 0}, safe=False)
 
 
 # 主页数据展示
@@ -268,4 +267,27 @@ class orderListViewSet(ModelViewSet):
             return JsonResponse({'status': 200, 'data': result}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
-        
+
+
+class editAddressViewSet(ModelViewSet):
+    def editAddress(self, request):
+        address_id = request.data['address_id']
+        # user_id = request.data['user_id']
+        user_name = request.data['user_name']
+        user_phone = request.data['user_phone']
+        default_flag = request.data['default_flag']
+        province_name = request.data['province_name']
+        city_name = request.data['city_name']
+        region_name = request.data['region_name']
+        detail_address = request.data['detail_address']
+        queryset = Address.objects.values().filter(address_id=address_id)
+        # print(address_id, user_name, user_phone, default_flag, province_name, city_name, region_name, detail_address)
+        if queryset:
+            address = Address.objects.filter(address_id=address_id).update(user_name=user_name, user_phone=user_phone, default_flag=default_flag,
+                                             province_name=province_name, city_name=city_name, region_name=region_name,
+                                             detail_address=detail_address)
+            print("插入成功", address)
+            print("插入成功")
+            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
