@@ -343,11 +343,9 @@ class getdefAddressViewSet(ModelViewSet):
         new_queryset = []
         for i in queryset:
             print(i)
-            dict['province_name'] = i['province_name']
-            dict['city_name'] = i['city_name']
-            dict['country_name'] = i['region_name']
-            dict['address_detail'] = i['detail_address']
-            new_queryset.append(dict)
+            dic = {'province_name': i['province_name'], 'city_name': i['city_name'], 'country_name': i['region_name'],
+                   'address_detail': i['detail_address']}
+            new_queryset.append(dic)
         if queryset:
             return JsonResponse({'status': 200, 'data': list(new_queryset)}, safe=False)
         else:
