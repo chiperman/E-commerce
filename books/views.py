@@ -60,6 +60,16 @@ class UserCollectionViewSet(ModelViewSet):
     queryset = User_collection.objects.all()
     serializer_class = UserCollectionSerializer
 
+    def queryCollection(self, request):
+        user_id = request.data['user_id']
+        order_id = request.data['order_id']
+        print(order_id, user_id)
+        is_collection = User_collection.objects.values().filter(user_id=user_id, order_id=order_id)
+        if is_collection:
+            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'data': 0}, safe=False)
+
 
 # 用户表
 class UserViewSet(ModelViewSet):
@@ -104,6 +114,16 @@ class CategoryViewSet(ModelViewSet):
 class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CategorySerializer
+
+
+def addToShopCart(self, request):
+    user_id = request.data['user_id']
+    goods_id = request.data['goods_id']
+    is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
+    if is_addtocart:
+        return JsonResponse({'status': 200, 'data': 1}, safe=False)
+    else:
+        return JsonResponse({'status': 500, 'data': 0}, safe=False)
 
 
 # 主页数据展示

@@ -74,7 +74,7 @@ class Goods(models.Model):
     stock_num = models.IntegerField()
     tag = models.CharField(max_length=100)
     goods_sell_status = models.IntegerField(default=0)
-    create_time = models.DateField(auto_now_add=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'goods_info'
