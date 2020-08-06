@@ -24,6 +24,12 @@ urlpatterns = [
     path('user/register/', views.RegisterViewSet.as_view({'post': 'register'})),
     # 登录
     path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
+    # 单个商品详情
+    path('goods/goodsDetails', views.HomeViewSet.as_view({'post': 'getGoodsDetails'})),
+    # 查询商品是否已收藏
+    path('user/queryCollection/', views.UserCollectionViewSet.as_view({'post': 'queryCollection'})),
+    # 加入到购物车
+    path('u-action/addToShopCart/', views.CartViewSet.as_view({'post': 'addToShopCart'})),
 
 ]
 
