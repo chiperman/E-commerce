@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
@@ -246,5 +248,23 @@ class AddressListViewSet(ModelViewSet):
                                           'default_flag', 'province_name', 'city_name').filter(user_id=user_id)
         if queryset:
             return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class orderListViewSet(ModelViewSet):
+    def getOrderList(self, request):
+        user_id = request.data['user_id']
+
+        queryset1 = Mall_order.objects.filter(user_id=user_id).values('order_no', 'total_price', 'order_status')
+        queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'order_id', 'goods_name',
+                                                                      'goods_name', 'goods_cover_img', 'selling_price',
+                                                                      'goods_count')
+
+        # items = chain(queryset1, queryset2)
+        result = {'orderList': list(queryset1), 'orderItem': list(queryset2)}
+        if result:
+            # return JsonResponse({'status': 200, 'data': list(items)}, safe=False)
+            return JsonResponse({'status': 200, 'data': result}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})

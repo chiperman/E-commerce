@@ -138,6 +138,7 @@ class Order_item(models.Model):
     order_id = models.CharField(max_length=100)
     # mall_order = models.ForeignKey('Mall_order', on_delete=models.CASCADE)
     goods_id = models.CharField(max_length=100)
+    user_id = models.CharField(max_length=100)
     # goods = models.ForeignKey('Goods', on_delete=models.CASCADE)
     goods_name = models.CharField(max_length=100)
     goods_cover_img = models.CharField(max_length=100)
