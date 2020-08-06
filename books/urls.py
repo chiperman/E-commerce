@@ -38,7 +38,14 @@ urlpatterns = [
     path('user/queryCollection/', views.UserCollectionViewSet.as_view({'post': 'queryCollection'})),
     # 加入到购物车
     path('u-action/addToShopCart/', views.CartViewSet.as_view({'post': 'addToShopCart'})),
-
+    # 查询购物车数据
+    path('user/checkShopCart/', views.checkShopCartViewSet.as_view({'post': 'ShopCart'})),
+    # 地址列表
+    path('user/addressList/', views.AddressListViewSet.as_view({'post': 'AddressList'})),
+    # 获取订单列表
+    path('user/orderList/', views.orderListViewSet.as_view({'post': 'getOrderList'})),
+    # 编辑收货地址
+    path('u-action/editAddress/', views.editAddressViewSet.as_view({'post': 'editAddress'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了

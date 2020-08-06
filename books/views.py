@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
@@ -115,15 +117,14 @@ class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
-
-def addToShopCart(self, request):
-    user_id = request.data['user_id']
-    goods_id = request.data['goods_id']
-    is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
-    if is_addtocart:
-        return JsonResponse({'status': 200, 'data': 1}, safe=False)
-    else:
-        return JsonResponse({'status': 500, 'data': 0}, safe=False)
+    def addToShopCart(self, request):
+        user_id = request.data['user_id']
+        goods_id = request.data['goods_id']
+        is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
+        if is_addtocart:
+            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'data': 0}, safe=False)
 
 
 # 主页数据展示
@@ -260,3 +261,69 @@ class GoodsListViewSet(ModelViewSet):
         else:
             print("返回商品列表失败")
             return JsonResponse({'status': 500, 'data': None}, safe=False)
+        print()
+
+
+# 查询购物车数据
+class checkShopCartViewSet(ModelViewSet):
+    def ShopCart(self, request):
+        user_id = request.data['user_id']
+        queryset = Cart.objects.values('cart_item_id', 'user_id', 'goods_id',
+                                       'is_deleted').filter(user_id=user_id)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class AddressListViewSet(ModelViewSet):
+    def AddressList(self, request):
+        user_id = request.data['user_id']
+        queryset = Address.objects.values('address_id', 'user_name', 'user_phone',
+                                          'default_flag', 'province_name', 'city_name').filter(user_id=user_id)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class orderListViewSet(ModelViewSet):
+    def getOrderList(self, request):
+        user_id = request.data['user_id']
+
+        queryset1 = Mall_order.objects.filter(user_id=user_id).values('order_no', 'total_price', 'order_status')
+        queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'order_id', 'goods_name',
+                                                                      'goods_name', 'goods_cover_img', 'selling_price',
+                                                                      'goods_count')
+
+        # items = chain(queryset1, queryset2)
+        result = {'orderList': list(queryset1), 'orderItem': list(queryset2)}
+        if result:
+            # return JsonResponse({'status': 200, 'data': list(items)}, safe=False)
+            return JsonResponse({'status': 200, 'data': result}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class editAddressViewSet(ModelViewSet):
+    def editAddress(self, request):
+        address_id = request.data['address_id']
+        # user_id = request.data['user_id']
+        user_name = request.data['user_name']
+        user_phone = request.data['user_phone']
+        default_flag = request.data['default_flag']
+        province_name = request.data['province_name']
+        city_name = request.data['city_name']
+        region_name = request.data['region_name']
+        detail_address = request.data['detail_address']
+        queryset = Address.objects.values().filter(address_id=address_id)
+        # print(address_id, user_name, user_phone, default_flag, province_name, city_name, region_name, detail_address)
+        if queryset:
+            address = Address.objects.filter(address_id=address_id).update(user_name=user_name, user_phone=user_phone, default_flag=default_flag,
+                                             province_name=province_name, city_name=city_name, region_name=region_name,
+                                             detail_address=detail_address)
+            print("插入成功", address)
+            print("插入成功")
+            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
