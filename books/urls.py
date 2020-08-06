@@ -24,6 +24,8 @@ urlpatterns = [
     path('user/register/', views.RegisterViewSet.as_view({'post': 'register'})),
     # 登录
     path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
+    # 单个商品详情
+    path('goods/goodsDetails', views.HomeViewSet.as_view({'post': 'getGoodsDetails'})),
 
 ]
 

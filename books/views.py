@@ -66,15 +66,14 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(methods=['GET'], detail=False, url_path="user/queryCollection/")
-    def getQueryCollection(self, request):
-        queryset = Goods.objects.values('is_collection')
-
-        if queryset != '':
-            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
-        else:
-            return JsonResponse({'status': 500, 'message': '链接有误'})
-
+    # @action(methods=['GET'], detail=False, url_path="user/queryCollection/")
+    # def getQueryCollection(self, request):
+    #     queryset = Goods.objects.values('is_collection')
+    #
+    #     if queryset != '':
+    #         return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+    #     else:
+    #         return JsonResponse({'status': 500, 'message': '链接有误'})
 
 
 # 地址表
@@ -113,7 +112,6 @@ class HomeViewSet(ModelViewSet):
     @action(methods=['POST'], detail=False, url_path="goods/home/")
     def getHome(self, request):
         queryset1 = Banner.objects.values().filter(is_deleted=0)
-
         queryset2 = Goods.objects.values()
         # 数量多于30的话则取前30
         if len(queryset2) > 30:
@@ -124,6 +122,16 @@ class HomeViewSet(ModelViewSet):
         # print(request.data)
         if queryset1 != '' or queryset2 != '':
             return JsonResponse({'status': 200, 'data': result}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '链接有误'})
+
+    def getGoodsDetails(self, request):
+        goods_id = request.data['goods_id']
+        goodsDetails = Goods.objects.values('goods_id', 'goods_name', 'goods_intro', 'goods_cover_img',
+                                            'goods_detail_content', 'original_price', 'selling_price', 'stock_num',
+                                            'goods_sell_status').filter(goods_id=goods_id)
+        if goods_id != '':
+            return JsonResponse({'status': 200, 'data': list(goodsDetails)}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
