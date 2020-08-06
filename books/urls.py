@@ -26,6 +26,12 @@ urlpatterns = [
     path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
     # 查询用户信息
     path('user/userInfo/', views.UserInfoViewSet.as_view({'post': 'userInfo'})),
+    # 更新用户信息
+    path('user/updateUserInfo/', views.UpdateUserInfoViewSet.as_view({'post': 'updateUserInfo'})),
+    # 用户收藏列表
+    path('user/collectionList/', views.CollectionListViewSet.as_view({'post': 'collectionList'})),
+    # 商品模块,分类商品列表
+    path('goods/goodsList/', views.GoodsListViewSet.as_view({'get': 'goodsList'})),
     # 单个商品详情
     path('goods/goodsDetails', views.HomeViewSet.as_view({'post': 'getGoodsDetails'})),
     # 查询商品是否已收藏
