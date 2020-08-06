@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from .serializers import BookSerializer, BannerSerializer, MallOrderSerializer, OrderItemSerializer, \
     OrderAddressSerializer, UserCollectionSerializer, UserSerializer, AddressSerializer, TokenSerializer, \
-    GoodsSerializer, CategorySerializer
+    GoodsSerializer, CategorySerializer, CartSerializer
 from .models import Book, Banner, Mall_order, Order_item, Order_address, User_collection, User, Cart, Category, Goods, \
     Token, Address
 
@@ -113,7 +113,8 @@ class CategoryViewSet(ModelViewSet):
 # 购物车表
 class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CartSerializer
+
 
 
 def addToShopCart(self, request):
@@ -225,3 +226,14 @@ class UserInfoViewSet(ModelViewSet):
             print("账号密码错误")
             return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
         print()
+
+
+# 查询购物车数据
+class checkShopCartViewSet(ModelViewSet):
+    def ShopCart(self, request):
+        user_id = request.data['user_id']
+        queryset = Cart.objects.values('cart_item_id', 'user_id', 'goods_id', 'is_deleted').filter(user_id=user_id)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
