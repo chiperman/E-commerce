@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from .serializers import BookSerializer, BannerSerializer, MallOrderSerializer, OrderItemSerializer, \
     OrderAddressSerializer, UserCollectionSerializer, UserSerializer, AddressSerializer, TokenSerializer, \
-    GoodsSerializer, CategorySerializer
+    GoodsSerializer, CategorySerializer, CartSerializer
 from .models import Book, Banner, Mall_order, Order_item, Order_address, User_collection, User, Cart, Category, Goods, \
     Token, Address
 
@@ -113,7 +113,7 @@ class CategoryViewSet(ModelViewSet):
 # 购物车表
 class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CartSerializer
 
 
 def addToShopCart(self, request):
@@ -200,28 +200,63 @@ class LoginViewSet(ModelViewSet):
         name = request.data['name']
         pwd = request.data['pwd']
         user = User.objects.values().filter(login_name=name, user_pwd=pwd)
+        print(user[0])
         # 判断用户是否存在
         if user:
             print("账号密码正确")
-            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
+            return JsonResponse({'status': 200, 'data': {'success': 1, 'user_id': user[0]['user_id']}}, safe=False)
         else:
             print("账号密码错误")
             return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
-        print()
 
 
 # 用户信息
 class UserInfoViewSet(ModelViewSet):
+
     def userInfo(self, request):
         print(request.data)
-        name = request.data['name']
-        pwd = request.data['pwd']
-        user = User.objects.values().filter(login_name=name, user_pwd=pwd)
+        user_id = request.data['user_id']
+        userinfo = User.objects.values('user_id', 'login_name', 'user_pwd', 'nick_name', 'locked', 'introduce',
+                                       'is_deleted', 'create_time').filter(user_id=user_id)
+        print(userinfo)
         # 判断用户是否存在
-        if user:
-            print("账号密码正确")
-            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
+        if userinfo:
+            print("返回用户信息成功")
+            return JsonResponse({'status': 200, 'data': userinfo[0]}, safe=False)
         else:
-            print("账号密码错误")
+            print("返回用户信息失败")
             return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
-        print()
+
+
+# 更新用户信息
+class UpdateUserInfoViewSet(ModelViewSet):
+    pass
+
+
+# 用户收藏列表
+class CollectionListViewSet(ModelViewSet):
+    def collectionList(self, request):
+        print(request.data)
+        user_id = request.data['user_id']
+        lists = User_collection.objects.values('order_id', 'is_deleted').filter(user_id=user_id)
+        print(lists)
+        # 判断是否存在收藏
+        if lists:
+            print("返回用户收藏成功")
+            return JsonResponse({'status': 200, 'data': list(lists)}, safe=False)
+        else:
+            print("返回用户收藏失败")
+            return JsonResponse({'status': 500, 'data': None}, safe=False)
+
+
+class GoodsListViewSet(ModelViewSet):
+    def goodsList(self, request):
+        goodsList = Category.objects.values()
+        #  print(goodsList)
+        # 判断是否存在
+        if goodsList:
+            print("返回商品列表成功")
+            return JsonResponse({'status': 200, 'data': list(goodsList)}, safe=False)
+        else:
+            print("返回商品列表失败")
+            return JsonResponse({'status': 500, 'data': None}, safe=False)
