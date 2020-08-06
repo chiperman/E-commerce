@@ -26,9 +26,14 @@ urlpatterns = [
     path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
     # 查询用户信息
     path('user/userInfo/', views.UserInfoViewSet.as_view({'post': 'userInfo'})),
+    # 单个商品详情
+    path('goods/goodsDetails', views.HomeViewSet.as_view({'post': 'getGoodsDetails'})),
+    # 查询商品是否已收藏
+    path('user/queryCollection/', views.UserCollectionViewSet.as_view({'post': 'queryCollection'})),
+    # 加入到购物车
+    path('u-action/addToShopCart/', views.CartViewSet.as_view({'post': 'addToShopCart'})),
 
 ]
-
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
 router.register(r"banner", views.BannerViewSet)
@@ -43,7 +48,6 @@ router.register(r"token", views.TokenViewSet)
 router.register(r"goods", views.GoodsViewSet)
 router.register(r"category", views.CategoryViewSet)
 router.register(r"cart", views.CartViewSet)
-
 
 urlpatterns += router.urls
 

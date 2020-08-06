@@ -60,11 +60,30 @@ class UserCollectionViewSet(ModelViewSet):
     queryset = User_collection.objects.all()
     serializer_class = UserCollectionSerializer
 
+    def queryCollection(self, request):
+        user_id = request.data['user_id']
+        order_id = request.data['order_id']
+        print(order_id, user_id)
+        is_collection = User_collection.objects.values().filter(user_id=user_id, order_id=order_id)
+        if is_collection:
+            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'data': 0}, safe=False)
+
 
 # 用户表
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    # @action(methods=['GET'], detail=False, url_path="user/queryCollection/")
+    # def getQueryCollection(self, request):
+    #     queryset = Goods.objects.values('is_collection')
+    #
+    #     if queryset != '':
+    #         return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+    #     else:
+    #         return JsonResponse({'status': 500, 'message': '链接有误'})
 
 
 # 地址表
@@ -97,13 +116,22 @@ class CartViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
 
+def addToShopCart(self, request):
+    user_id = request.data['user_id']
+    goods_id = request.data['goods_id']
+    is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
+    if is_addtocart:
+        return JsonResponse({'status': 200, 'data': 1}, safe=False)
+    else:
+        return JsonResponse({'status': 500, 'data': 0}, safe=False)
+
+
 # 主页数据展示
 class HomeViewSet(ModelViewSet):
 
     @action(methods=['POST'], detail=False, url_path="goods/home/")
     def getHome(self, request):
         queryset1 = Banner.objects.values().filter(is_deleted=0)
-
         queryset2 = Goods.objects.values()
         # 数量多于30的话则取前30
         if len(queryset2) > 30:
@@ -114,6 +142,16 @@ class HomeViewSet(ModelViewSet):
         # print(request.data)
         if queryset1 != '' or queryset2 != '':
             return JsonResponse({'status': 200, 'data': result}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '链接有误'})
+
+    def getGoodsDetails(self, request):
+        goods_id = request.data['goods_id']
+        goodsDetails = Goods.objects.values('goods_id', 'goods_name', 'goods_intro', 'goods_cover_img',
+                                            'goods_detail_content', 'original_price', 'selling_price', 'stock_num',
+                                            'goods_sell_status').filter(goods_id=goods_id)
+        if goods_id != '':
+            return JsonResponse({'status': 200, 'data': list(goodsDetails)}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
