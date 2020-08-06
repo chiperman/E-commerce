@@ -46,6 +46,8 @@ urlpatterns = [
     path('user/orderList/', views.orderListViewSet.as_view({'post': 'getOrderList'})),
     # 编辑收货地址
     path('u-action/editAddress/', views.editAddressViewSet.as_view({'post': 'editAddress'})),
+    # 默认地址
+    path('user/defAddress/', views.getdefAddressViewSet.as_view({'post': 'defAddress'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
