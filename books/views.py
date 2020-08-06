@@ -144,15 +144,14 @@ class RegisterViewSet(ModelViewSet):
         user = User.objects.values().filter(login_name=name)
         # 判断用户是否已经存在
         if user:
-            return JsonResponse({'status': 200, 'data': 0}, safe=False)
+            return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
         # 存储到数据库中
         else:
-            print(1111)
-            user = User.objects.create(login_name=user, user_pwd=pwd, nick_name="铁蛋", introduce="我是hhh", is_deleted=0)
-            print(222)
-            print(user.user_id)
-            user.save()
-            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+            print(type(name), type(pwd))
+            user = User.objects.create(login_name=name, user_pwd=pwd, nick_name='铁蛋', introduce='我是hhh')
+            print("插入成功", user)
+            # user.save()
+            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
 
 
 # 登录
@@ -166,8 +165,25 @@ class LoginViewSet(ModelViewSet):
         # 判断用户是否存在
         if user:
             print("账号密码正确")
-            return JsonResponse({'status': 200, 'data': 1}, safe=False)
+            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
         else:
             print("账号密码错误")
-            return JsonResponse({'status': 500, 'data': 0}, safe=False)
+            return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
+        print()
+
+
+# 用户信息
+class UserInfoViewSet(ModelViewSet):
+    def userInfo(self, request):
+        print(request.data)
+        name = request.data['name']
+        pwd = request.data['pwd']
+        user = User.objects.values().filter(login_name=name, user_pwd=pwd)
+        # 判断用户是否存在
+        if user:
+            print("账号密码正确")
+            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
+        else:
+            print("账号密码错误")
+            return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
         print()

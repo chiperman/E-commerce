@@ -24,6 +24,8 @@ urlpatterns = [
     path('user/register/', views.RegisterViewSet.as_view({'post': 'register'})),
     # 登录
     path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
+    # 查询用户信息
+    path('user/userInfo/', views.UserInfoViewSet.as_view({'post': 'userInfo'})),
 
 ]
 
@@ -45,4 +47,4 @@ router.register(r"cart", views.CartViewSet)
 
 urlpatterns += router.urls
 
-print(router.urls)
+# print(router.urls)
