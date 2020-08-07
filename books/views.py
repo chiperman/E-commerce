@@ -1,3 +1,4 @@
+import uuid
 from itertools import chain
 
 from django.http import JsonResponse
@@ -275,7 +276,7 @@ class checkShopCartViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 地址列表
 class AddressListViewSet(ModelViewSet):
     def AddressList(self, request):
         user_id = request.data['user_id']
@@ -286,7 +287,7 @@ class AddressListViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 获取订单列表
 class orderListViewSet(ModelViewSet):
     def getOrderList(self, request):
         user_id = request.data['user_id']
@@ -304,7 +305,7 @@ class orderListViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 编辑收货地址
 class editAddressViewSet(ModelViewSet):
     def editAddress(self, request):
         print(request.data)
@@ -334,7 +335,7 @@ class editAddressViewSet(ModelViewSet):
             print("插入地址失败")
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 默认地址
 class getdefAddressViewSet(ModelViewSet):
     def defAddress(self, request):
         user_id = request.data['user_id']
@@ -351,7 +352,7 @@ class getdefAddressViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 删除购物车商品
 class delCartGoodsViewSet(ModelViewSet):
     def delCartGoods(self, request):
         cart_item_id = request.data['cart_item_id']
@@ -364,7 +365,7 @@ class delCartGoodsViewSet(ModelViewSet):
             else:
                 return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 商品收藏、取消
 class isCollectionsViewSet(ModelViewSet):
     def is_collection(self, request):
         user_id = request.data['user_id']
@@ -377,7 +378,7 @@ class isCollectionsViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
-
+# 删除收货地址
 class delAddressViewSet(ModelViewSet):
     def delAddress(self, requset):
         address_id = requset.data['address_id']
@@ -386,5 +387,21 @@ class delAddressViewSet(ModelViewSet):
         if queryset:
             delAddressAction = Address.objects.get(address_id=address_id).delete()
             return JsonResponse({'status': 200, 'data': {'delAddress': 1}}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+# 提交订单
+class submitOrderViewSet(ModelViewSet):
+    def submitOrder(self, request):
+        order_id = uuid.uuid4()
+        order_no = uuid.uuid4()
+        user_id = request.data['user_id']
+        total_price = request.data['total_price']
+        pay_status = request.data['pay_status']
+        pay_type = request.data['pay_type']
+        queryset = Mall_order.objects.create(order_id=order_id, order_no=order_no, user_id=user_id,
+                                             total_price=total_price, pay_status=pay_status, pay_type=pay_type)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': {'message': '成功创建订单'}}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
