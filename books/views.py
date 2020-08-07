@@ -276,6 +276,7 @@ class checkShopCartViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
+
 # 地址列表
 class AddressListViewSet(ModelViewSet):
     def AddressList(self, request):
@@ -287,23 +288,31 @@ class AddressListViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
+
 # 获取订单列表
 class orderListViewSet(ModelViewSet):
     def getOrderList(self, request):
         user_id = request.data['user_id']
 
         queryset1 = Mall_order.objects.filter(user_id=user_id).values('order_no', 'total_price', 'order_status')
-        queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'order_id', 'goods_name',
-                                                                      'goods_name', 'goods_cover_img', 'selling_price',
+        queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'goods_name',
+                                                                      'goods_cover_img', 'selling_price',
                                                                       'goods_count')
+        new_queryset1 = []
 
-        # items = chain(queryset1, queryset2)
-        result = {'orderList': list(queryset1), 'orderItem': list(queryset2)}
-        if result:
-            # return JsonResponse({'status': 200, 'data': list(items)}, safe=False)
-            return JsonResponse({'status': 200, 'data': result}, safe=False)
+        for i in queryset1:
+            dict1 = {'order_no': i['order_no'], 'total_price': i['total_price'], 'order_status': i['order_status']}
+            new_queryset1.append(dict1)
+            for j in queryset2:
+                dict1 = {'order_item_id': j['order_item_id']}
+                new_queryset1.append(dict1)
+        print(new_queryset1)
+
+        if queryset1:
+            return JsonResponse({'status': 200, 'data': list(new_queryset1)}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
+
 
 # 编辑收货地址
 class editAddressViewSet(ModelViewSet):
@@ -335,6 +344,7 @@ class editAddressViewSet(ModelViewSet):
             print("插入地址失败")
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
+
 # 默认地址
 class getdefAddressViewSet(ModelViewSet):
     def defAddress(self, request):
@@ -352,6 +362,7 @@ class getdefAddressViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
+
 # 删除购物车商品
 class delCartGoodsViewSet(ModelViewSet):
     def delCartGoods(self, request):
@@ -364,6 +375,7 @@ class delCartGoodsViewSet(ModelViewSet):
                 return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
             else:
                 return JsonResponse({'status': 500, 'message': '数据有误'})
+
 
 # 商品收藏、取消
 class isCollectionsViewSet(ModelViewSet):
@@ -378,6 +390,7 @@ class isCollectionsViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
+
 # 删除收货地址
 class delAddressViewSet(ModelViewSet):
     def delAddress(self, requset):
@@ -390,6 +403,7 @@ class delAddressViewSet(ModelViewSet):
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
+
 # 提交订单
 class submitOrderViewSet(ModelViewSet):
     def submitOrder(self, request):
@@ -399,8 +413,10 @@ class submitOrderViewSet(ModelViewSet):
         total_price = request.data['total_price']
         pay_status = request.data['pay_status']
         pay_type = request.data['pay_type']
+        extra_info = request.data['extra_info']
         queryset = Mall_order.objects.create(order_id=order_id, order_no=order_no, user_id=user_id,
-                                             total_price=total_price, pay_status=pay_status, pay_type=pay_type)
+                                             total_price=total_price, pay_status=pay_status, pay_type=pay_type,
+                                             extra_info=extra_info)
         if queryset:
             return JsonResponse({'status': 200, 'data': {'message': '成功创建订单'}}, safe=False)
         else:
