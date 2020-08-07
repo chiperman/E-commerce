@@ -350,3 +350,41 @@ class getdefAddressViewSet(ModelViewSet):
             return JsonResponse({'status': 200, 'data': list(new_queryset)}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class delCartGoodsViewSet(ModelViewSet):
+    def delCartGoods(self, request):
+        cart_item_id = request.data['cart_item_id']
+        # queryset = Cart.objects.filter(cart_item_id=cart_item_id).values('is_deleted')
+        Cart.objects.filter(cart_item_id=cart_item_id).update(is_deleted=1)
+        queryset = Cart.objects.filter(cart_item_id=cart_item_id).values('is_deleted')
+        for i in queryset:
+            if i['is_deleted'] == 1:
+                return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
+            else:
+                return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class isCollectionsViewSet(ModelViewSet):
+    def is_collection(self, request):
+        user_id = request.data['user_id']
+        order_id = request.data['order_id']
+        is_deleted = request.data['is_deleted']
+        queryset = User_collection.objects.filter(user_id=user_id, order_id=order_id)
+        User_collection.objects.filter(user_id=user_id, order_id=order_id).update(is_deleted=is_deleted)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': {'is_collection': is_deleted}}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class delAddressViewSet(ModelViewSet):
+    def delAddress(self, requset):
+        address_id = requset.data['address_id']
+        queryset = Address.objects.filter(address_id=address_id).values()
+        print(list(queryset))
+        if queryset:
+            delAddressAction = Address.objects.get(address_id=address_id).delete()
+            return JsonResponse({'status': 200, 'data': {'delAddress': 1}}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
