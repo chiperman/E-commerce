@@ -322,12 +322,33 @@ class editAddressViewSet(ModelViewSet):
         print(queryset)
         # print(address_id, user_name, user_phone, default_flag, province_name, city_name, region_name, detail_address)
         if queryset:
-            address = Address.objects.filter(address_id=address_id).update(user_name=user_name, user_phone=user_phone, default_flag=default_flag,
-                                             province_name=province_name, city_name=city_name, region_name=region_name,
-                                             detail_address=detail_address)
+            address = Address.objects.filter(address_id=address_id).update(user_name=user_name, user_phone=user_phone,
+                                                                           default_flag=default_flag,
+                                                                           province_name=province_name,
+                                                                           city_name=city_name, region_name=region_name,
+                                                                           detail_address=detail_address)
             print("插入成功", address)
             print("插入成功")
             return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
         else:
             print("插入地址失败")
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class getdefAddressViewSet(ModelViewSet):
+    def defAddress(self, request):
+        user_id = request.data['user_id']
+        queryset = Address.objects.filter(user_id=user_id, default_flag=1).values('province_name', 'city_name',
+                                                                                  'region_name', 'detail_address')
+        new_queryset = []
+        for i in queryset:
+            print(i)
+            dict['province_name'] = i['province_name']
+            dict['city_name'] = i['city_name']
+            dict['country_name'] = i['region_name']
+            dict['address_detail'] = i['detail_address']
+            new_queryset.append(dict)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': list(new_queryset)}, safe=False)
+        else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
