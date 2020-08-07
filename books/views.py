@@ -244,18 +244,25 @@ class UpdateUserInfoViewSet(ModelViewSet):
 class CollectionListViewSet(ModelViewSet):
     def collectionList(self, request):
         print(request.data)
-        user_id = request.data['user_id']
-        lists = User_collection.objects.values('order_id', 'is_deleted').filter(user_id=user_id)
+        user_id = request.data['userId']
+        lists = User_collection.objects.values('order_id', 'is_deleted').filter(user_id=user_id, is_deleted=0)
         print(lists)
         new_lists = []
         for i in lists:
             # print(i)
+            if i['is_deleted'] == 1:
+                i['is_deleted'] = True
+            else:
+                i['is_deleted'] =False
             dic = {'goods_id': i['order_id'], 'is_deleted': i['is_deleted']}
+            list2 = Goods.objects.values().filter(goods_id=i['order_id']).first()
+            dic.update(list2)
             new_lists.append(dic)
+
         # 判断是否存在收藏
         if lists:
             print("返回用户收藏成功")
-            return JsonResponse({'status': 200, 'data': list(new_lists)}, safe=False)
+            return JsonResponse({'status': 200, 'data': {"collect_Info":list(new_lists)}}, safe=False)
         else:
             print("返回用户收藏失败")
             return JsonResponse({'status': 500, 'data': None}, safe=False)
@@ -423,15 +430,18 @@ class delCartGoodsViewSet(ModelViewSet):
 # 商品收藏、取消
 class isCollectionsViewSet(ModelViewSet):
     def is_collection(self, request):
-        user_id = request.data['user_id']
-        order_id = request.data['order_id']
-        is_deleted = request.data['is_deleted']
-        queryset = User_collection.objects.filter(user_id=user_id, order_id=order_id)
-        User_collection.objects.filter(user_id=user_id, order_id=order_id).update(is_deleted=is_deleted)
+        user_id = request.data['userId']
+        goods_id = request.data['goodsId']
+        is_deleted = request.data['isDeleted']
+        queryset = User_collection.objects.filter(user_id=user_id, order_id=goods_id)
         if queryset:
+            User_collection.objects.filter(user_id=user_id, order_id=goods_id).update(is_deleted=is_deleted)
+            print("改变收藏状态")
             return JsonResponse({'status': 200, 'data': {'is_collection': is_deleted}}, safe=False)
         else:
-            return JsonResponse({'status': 500, 'message': '数据有误'})
+            User_collection.objects.create(user_id=user_id, order_id=goods_id)
+            print("添加收藏")
+            return JsonResponse({'status': 500, 'data': {'is_collection': is_deleted}},safe=False)
 
 
 # 删除收货地址
@@ -472,4 +482,21 @@ class submitOrderViewSet(ModelViewSet):
         if queryset:
             return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
         else:
+            return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
+
+
+class CategorySearchViewSet(ModelViewSet):
+    def categorySearch(self, request):
+        print(request.data)
+        category_name = request.data['categoryName']
+        goods = Goods.objects.values('goods_name','goods_cover_img').filter(goods_name__contains=category_name)
+        good = []
+        for i in range(len(goods)):
+            j = random.randint(0, len(goods) - 1)
+            good.append(goods[j])
+        if goods:
+            print("返回分类正确")
+            return JsonResponse({'status': 200, 'data': {"goods_info":list(goods)}}, safe=False)
+        else:
+            print("返回分类错误")
             return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
