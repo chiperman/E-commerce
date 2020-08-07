@@ -21,9 +21,9 @@ urlpatterns = [
     # 搜索
     path('search/', views.SerchViewSet.as_view({'get': 'search'})),
     # 注册
-    path('user/register/', views.RegisterViewSet.as_view({'post': 'register'})),
+    path('user/register', views.RegisterViewSet.as_view({'post': 'register'})),
     # 登录
-    path('user/login/', views.LoginViewSet.as_view({'post': 'login'})),
+    path('user/login', views.LoginViewSet.as_view({'post': 'login'})),
     # 查询用户信息
     path('user/userInfo/', views.UserInfoViewSet.as_view({'post': 'userInfo'})),
     # 更新用户信息

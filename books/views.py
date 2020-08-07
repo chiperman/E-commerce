@@ -139,7 +139,7 @@ class HomeViewSet(ModelViewSet):
         if len(queryset2) > 30:
             queryset2 = queryset2[0:30]
         print(len(queryset2))
-        result = {'mall_carouse': list(queryset1),
+        result = {'mall_carousel': list(queryset1),
                   'goods_info': list(queryset2)}
         # print(request.data)
         if queryset1 != '' or queryset2 != '':
@@ -148,12 +148,14 @@ class HomeViewSet(ModelViewSet):
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
     def getGoodsDetails(self, request):
-        goods_id = request.data['goods_id']
+        goods_id = request.data['goodsId']
+        print(goods_id)
         goodsDetails = Goods.objects.values('goods_id', 'goods_name', 'goods_intro', 'goods_cover_img',
                                             'goods_detail_content', 'original_price', 'selling_price', 'stock_num',
                                             'goods_sell_status').filter(goods_id=goods_id)
+
         if goods_id != '':
-            return JsonResponse({'status': 200, 'data': list(goodsDetails)}, safe=False)
+            return JsonResponse({'status': 200, 'data': {"goods_Info":list(goodsDetails)}}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
@@ -179,8 +181,8 @@ class RegisterViewSet(ModelViewSet):
 
     def register(self, request):
         print(request.data)
-        name = request.data['name']
-        pwd = request.data['pwd']
+        name = request.data['username']
+        pwd = request.data['password']
         user = User.objects.values().filter(login_name=name)
         # 判断用户是否已经存在
         if user:
@@ -199,8 +201,8 @@ class LoginViewSet(ModelViewSet):
 
     def login(self, request):
         print(request.data)
-        name = request.data['name']
-        pwd = request.data['pwd']
+        name = request.data['username']
+        pwd = request.data['password']
         user = User.objects.values().filter(login_name=name, user_pwd=pwd)
         print(user[0])
         # 判断用户是否存在
@@ -242,15 +244,21 @@ class CollectionListViewSet(ModelViewSet):
         user_id = request.data['user_id']
         lists = User_collection.objects.values('order_id', 'is_deleted').filter(user_id=user_id)
         print(lists)
+        new_lists = []
+        for i in lists:
+            # print(i)
+            dic = {'goods_id': i['order_id'], 'is_deleted': i['is_deleted']}
+            new_lists.append(dic)
         # 判断是否存在收藏
         if lists:
             print("返回用户收藏成功")
-            return JsonResponse({'status': 200, 'data': list(lists)}, safe=False)
+            return JsonResponse({'status': 200, 'data': list(new_lists)}, safe=False)
         else:
             print("返回用户收藏失败")
             return JsonResponse({'status': 500, 'data': None}, safe=False)
 
 
+# 商品模块,分类商品列表
 class GoodsListViewSet(ModelViewSet):
     def goodsList(self, request):
         goodsList = Category.objects.values()
@@ -295,21 +303,27 @@ class orderListViewSet(ModelViewSet):
         user_id = request.data['user_id']
 
         queryset1 = Mall_order.objects.filter(user_id=user_id).values('order_no', 'total_price', 'order_status')
-        queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'goods_name',
-                                                                      'goods_cover_img', 'selling_price',
-                                                                      'goods_count')
-        new_queryset1 = []
+        # queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'goods_name','order_id'
+        #                                                               'goods_cover_img', 'selling_price',
+        #                                                               'goods_count')
 
+        result = []
         for i in queryset1:
-            dict1 = {'order_no': i['order_no'], 'total_price': i['total_price'], 'order_status': i['order_status']}
-            new_queryset1.append(dict1)
+            print(i)
+            result2 = []
+            queryset2 = Order_item.objects.filter(order_id=i['order_no']).values('order_item_id', 'goods_name',
+                                                                'goods_cover_img','selling_price','goods_count')
             for j in queryset2:
-                dict1 = {'order_item_id': j['order_item_id']}
-                new_queryset1.append(dict1)
-        print(new_queryset1)
+                dic = {'order_no': i['order_no'], 'order_item_id': j['order_item_id'],
+                       'goods_name': j['goods_name'],'goods_cover_img': j['goods_cover_img'],
+                       'selling_price': j['selling_price'],'goods_count': j['goods_count'],
+                       'total_price': i['total_price'],'order_status': i['order_status']}
+                result2.append(dic)
+            result.append(result2)
+        print(result)
 
         if queryset1:
-            return JsonResponse({'status': 200, 'data': list(new_queryset1)}, safe=False)
+            return JsonResponse({'status': 200, 'data': result}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
 
