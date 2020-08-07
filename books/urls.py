@@ -54,6 +54,7 @@ urlpatterns = [
     path('u-action/collection/', views.isCollectionsViewSet.as_view({'post': 'is_collection'})),
     # 删除收货地址
     path('u-action/delAddress/', views.delAddressViewSet.as_view({'post': 'delAddress'})),
+    # 提交订单
     path('u-action/submitOrder/', views.submitOrderViewSet.as_view({'post': 'submitOrder'})),
 ]
 
