@@ -342,6 +342,7 @@ class getdefAddressViewSet(ModelViewSet):
                                                                                   'region_name', 'detail_address')
         new_queryset = []
         for i in queryset:
+            print(i)
             dic = {'province_name': i['province_name'], 'city_name': i['city_name'], 'country_name': i['region_name'],
                    'address_detail': i['detail_address']}
             new_queryset.append(dic)
