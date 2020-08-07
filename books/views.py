@@ -1,3 +1,4 @@
+import uuid
 from itertools import chain
 
 from django.http import JsonResponse
@@ -386,5 +387,21 @@ class delAddressViewSet(ModelViewSet):
         if queryset:
             delAddressAction = Address.objects.get(address_id=address_id).delete()
             return JsonResponse({'status': 200, 'data': {'delAddress': 1}}, safe=False)
+        else:
+            return JsonResponse({'status': 500, 'message': '数据有误'})
+
+
+class submitOrderViewSet(ModelViewSet):
+    def submitOrder(self, request):
+        order_id = uuid.uuid4()
+        order_no = uuid.uuid4()
+        user_id = request.data['user_id']
+        total_price = request.data['total_price']
+        pay_status = request.data['pay_status']
+        pay_type = request.data['pay_type']
+        queryset = Mall_order.objects.create(order_id=order_id, order_no=order_no, user_id=user_id,
+                                             total_price=total_price, pay_status=pay_status, pay_type=pay_type)
+        if queryset:
+            return JsonResponse({'status': 200, 'data': {'message': '成功创建订单'}}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '数据有误'})
