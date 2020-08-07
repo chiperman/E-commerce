@@ -1,3 +1,4 @@
+import random
 import uuid
 from itertools import chain
 
@@ -113,19 +114,18 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
 
-# 购物车表
+# 添加购物车表
 class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
     def addToShopCart(self, request):
-        user_id = request.data['user_id']
-        goods_id = request.data['goods_id']
-        is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id)
-        if is_addtocart:
-            return JsonResponse({'status': 200, 'data': 1}, safe=False)
-        else:
-            return JsonResponse({'status': 500, 'data': 0}, safe=False)
+        user_id = request.data['userId']
+        goods_id = request.data['goodsId']
+        Cart.objects.create(user_id=user_id, goods_id=goods_id, goods_count="1", update_time='2003-04-01')
+        # is_addtocart = Cart.objects.values().filter(user_id=user_id, goods_id=goods_id,
+        return JsonResponse({'status': 200, 'data': {"success": 1}}, safe=False)
+        # return JsonResponse({'status': 500, 'data': {"success": 0}}, safe=False)
 
 
 # 主页数据展示
@@ -135,12 +135,15 @@ class HomeViewSet(ModelViewSet):
     def getHome(self, request):
         queryset1 = Banner.objects.values().filter(is_deleted=0)
         queryset2 = Goods.objects.values()
+        queryset3 = []
         # 数量多于30的话则取前30
         if len(queryset2) > 30:
-            queryset2 = queryset2[0:30]
-        print(len(queryset2))
+            for i in range(30):
+                j = random.randint(0, len(queryset2)-1)
+                queryset3.append(queryset2[j])
+        # print(len(queryset2))
         result = {'mall_carousel': list(queryset1),
-                  'goods_info': list(queryset2)}
+                  'goods_info': list(queryset3)}
         # print(request.data)
         if queryset1 != '' or queryset2 != '':
             return JsonResponse({'status': 200, 'data': result}, safe=False)
@@ -152,10 +155,10 @@ class HomeViewSet(ModelViewSet):
         print(goods_id)
         goodsDetails = Goods.objects.values('goods_id', 'goods_name', 'goods_intro', 'goods_cover_img',
                                             'goods_detail_content', 'original_price', 'selling_price', 'stock_num',
-                                            'goods_sell_status').filter(goods_id=goods_id)
-
+                                            'goods_sell_status').filter(goods_id=goods_id).first()
+        print(goodsDetails)
         if goods_id != '':
-            return JsonResponse({'status': 200, 'data': {"goods_Info":list(goodsDetails)}}, safe=False)
+            return JsonResponse({'status': 200, 'data': {"goods_info": goodsDetails}}, safe=False)
         else:
             return JsonResponse({'status': 500, 'message': '链接有误'})
 
@@ -266,7 +269,7 @@ class GoodsListViewSet(ModelViewSet):
         # 判断是否存在
         if goodsList:
             print("返回商品列表成功")
-            return JsonResponse({'status': 200, 'data': list(goodsList)}, safe=False)
+            return JsonResponse({'status': 200, 'data': {"goods_info": list(goodsList)}}, safe=False)
         else:
             print("返回商品列表失败")
             return JsonResponse({'status': 500, 'data': None}, safe=False)
@@ -276,33 +279,49 @@ class GoodsListViewSet(ModelViewSet):
 # 查询购物车数据
 class checkShopCartViewSet(ModelViewSet):
     def ShopCart(self, request):
-        user_id = request.data['user_id']
+        print(request.data)
+        user_id = request.data['userId']
+        carts = []
         queryset = Cart.objects.values('cart_item_id', 'user_id', 'goods_id',
-                                       'is_deleted').filter(user_id=user_id)
+                                       'is_deleted', 'goods_count').filter(user_id=user_id, is_deleted=0)
+        for i in queryset:
+            # print(i)
+            queryset2 = Goods.objects.values('goods_name', 'goods_cover_img', 'selling_price').filter(
+                goods_id=i['goods_id']).first()
+            dic = {"cart_item_id": i["cart_item_id"],
+                   "user_id": i["user_id"],
+                   "goods_id": i["goods_id"],
+                   "is_deleted": i["is_deleted"],
+                   "goods_name": queryset2["goods_name"],
+                   "goods_cover_img": queryset2["goods_cover_img"],
+                   "selling_price": queryset2["selling_price"],
+                   "goods_count": i["goods_count"]}
+            carts.append(dic)
         if queryset:
-            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+            return JsonResponse({'status': 200, 'data': {"shopping_cart": carts}}, safe=False)
         else:
-            return JsonResponse({'status': 500, 'message': '数据有误'})
+            return JsonResponse({'status': 500, 'data': None})
 
 
 # 地址列表
 class AddressListViewSet(ModelViewSet):
     def AddressList(self, request):
-        user_id = request.data['user_id']
+        user_id = request.data['userId']
         queryset = Address.objects.values('address_id', 'user_name', 'user_phone',
                                           'default_flag', 'province_name', 'city_name').filter(user_id=user_id)
         if queryset:
-            return JsonResponse({'status': 200, 'data': list(queryset)}, safe=False)
+            return JsonResponse({'status': 200, 'data': {"address_info": list(queryset)}}, safe=False)
         else:
-            return JsonResponse({'status': 500, 'message': '数据有误'})
+            return JsonResponse({'status': 500, 'data': None})
 
 
 # 获取订单列表
 class orderListViewSet(ModelViewSet):
     def getOrderList(self, request):
-        user_id = request.data['user_id']
+        user_id = request.data['userId']
 
-        queryset1 = Mall_order.objects.filter(user_id=user_id).values('order_no', 'total_price', 'order_status')
+        queryset1 = Mall_order.objects.filter(user_id=user_id).values('order_no', 'total_price', 'order_status',
+                                                                      'order_id')
         # queryset2 = Order_item.objects.filter(user_id=user_id).values('order_item_id', 'goods_name','order_id'
         #                                                               'goods_cover_img', 'selling_price',
         #                                                               'goods_count')
@@ -311,13 +330,14 @@ class orderListViewSet(ModelViewSet):
         for i in queryset1:
             print(i)
             result2 = []
-            queryset2 = Order_item.objects.filter(order_id=i['order_no']).values('order_item_id', 'goods_name',
-                                                                'goods_cover_img','selling_price','goods_count')
+            queryset2 = Order_item.objects.filter(order_id=i['order_id']).values('order_item_id', 'goods_name',
+                                                                                 'goods_cover_img', 'selling_price',
+                                                                                 'goods_count')
             for j in queryset2:
                 dic = {'order_no': i['order_no'], 'order_item_id': j['order_item_id'],
-                       'goods_name': j['goods_name'],'goods_cover_img': j['goods_cover_img'],
-                       'selling_price': j['selling_price'],'goods_count': j['goods_count'],
-                       'total_price': i['total_price'],'order_status': i['order_status']}
+                       'goods_name': j['goods_name'], 'goods_cover_img': j['goods_cover_img'],
+                       'selling_price': j['selling_price'], 'goods_count': j['goods_count'],
+                       'total_price': i['total_price'], 'order_status': i['order_status']}
                 result2.append(dic)
             result.append(result2)
         print(result)
@@ -332,31 +352,39 @@ class orderListViewSet(ModelViewSet):
 class editAddressViewSet(ModelViewSet):
     def editAddress(self, request):
         print(request.data)
-        address_id = request.data['address_id']
-        # user_id = request.data['user_id']
-        user_name = request.data['user_name']
-        user_phone = request.data['user_phone']
-        default_flag = request.data['default_flag']
-        province_name = request.data['province_name']
-        city_name = request.data['city_name']
-        region_name = request.data['region_name']
-        detail_address = request.data['detail_address']
+        address_id = request.data['addressId']
+        user_id = request.data['userId']
+        user_name = request.data['userName']
+        user_phone = request.data['userPhone']
+        default_flag = request.data['defaltFlag']
+        if default_flag:
+            default_flag = 1
+        else:
+            default_flag = 0
+        province_name = request.data['provinceName']
+        city_name = request.data['cityName']
+        region_name = request.data['countryName']
+        detail_address = "123456"
         print(address_id)
-        queryset = Address.objects.values().filter(address_id=address_id)
-        print(queryset)
+        # queryset = Address.objects.values().filter(address_id=address_id)
+        # print(queryset)
         # print(address_id, user_name, user_phone, default_flag, province_name, city_name, region_name, detail_address)
-        if queryset:
+        if address_id != "":
             address = Address.objects.filter(address_id=address_id).update(user_name=user_name, user_phone=user_phone,
                                                                            default_flag=default_flag,
                                                                            province_name=province_name,
                                                                            city_name=city_name, region_name=region_name,
                                                                            detail_address=detail_address)
-            print("插入成功", address)
-            print("插入成功")
+            print("修改地址成功", address)
             return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
         else:
-            print("插入地址失败")
-            return JsonResponse({'status': 500, 'message': '数据有误'})
+            Address.objects.create(user_id=user_id, user_name=user_name, user_phone=user_phone,
+                                   default_flag=default_flag,
+                                   province_name=province_name,
+                                   city_name=city_name, region_name=region_name,
+                                   detail_address=detail_address)
+            print("插入新的地址")
+            return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
 
 
 # 默认地址
@@ -380,7 +408,8 @@ class getdefAddressViewSet(ModelViewSet):
 # 删除购物车商品
 class delCartGoodsViewSet(ModelViewSet):
     def delCartGoods(self, request):
-        cart_item_id = request.data['cart_item_id']
+        user_id = request.data['userId']
+        cart_item_id = request.data['cartItemId']
         # queryset = Cart.objects.filter(cart_item_id=cart_item_id).values('is_deleted')
         Cart.objects.filter(cart_item_id=cart_item_id).update(is_deleted=1)
         queryset = Cart.objects.filter(cart_item_id=cart_item_id).values('is_deleted')
@@ -388,7 +417,7 @@ class delCartGoodsViewSet(ModelViewSet):
             if i['is_deleted'] == 1:
                 return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
             else:
-                return JsonResponse({'status': 500, 'message': '数据有误'})
+                return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)
 
 
 # 商品收藏、取消
@@ -423,15 +452,24 @@ class submitOrderViewSet(ModelViewSet):
     def submitOrder(self, request):
         order_id = uuid.uuid4()
         order_no = uuid.uuid4()
-        user_id = request.data['user_id']
-        total_price = request.data['total_price']
-        pay_status = request.data['pay_status']
-        pay_type = request.data['pay_type']
-        extra_info = request.data['extra_info']
+        user_id = request.data['userId']
+        total_price = request.data['totalPrice']
+        pay_status = request.data['payStatus']
+        pay_type = request.data['payType']
+        goodsInfo = request.data['goodsInfo']
+
         queryset = Mall_order.objects.create(order_id=order_id, order_no=order_no, user_id=user_id,
-                                             total_price=total_price, pay_status=pay_status, pay_type=pay_type,
-                                             extra_info=extra_info)
+                                             total_price=total_price, pay_status=pay_status, pay_type=pay_type)
+        for i in goodsInfo:
+            print(i)
+            Order_item.objects.create(order_id=order_id,
+                                      goods_id=i['goods_id'],
+                                      user_id=i['user_id'],
+                                      goods_name=i['goods_name'],
+                                      goods_cover_img=i['goods_cover_img'],
+                                      selling_price=i['selling_price'],
+                                      goods_count=i['goods_count'])
         if queryset:
-            return JsonResponse({'status': 200, 'data': {'message': '成功创建订单'}}, safe=False)
+            return JsonResponse({'status': 200, 'data': {'success': 1}}, safe=False)
         else:
-            return JsonResponse({'status': 500, 'message': '数据有误'})
+            return JsonResponse({'status': 500, 'data': {'success': 0}}, safe=False)

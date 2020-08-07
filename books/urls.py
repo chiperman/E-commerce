@@ -27,35 +27,35 @@ urlpatterns = [
     # 查询用户信息
     path('user/userInfo/', views.UserInfoViewSet.as_view({'post': 'userInfo'})),
     # 更新用户信息
-    path('user/updateUserInfo/', views.UpdateUserInfoViewSet.as_view({'post': 'updateUserInfo'})),
+    path('user/updateUserInfo', views.UpdateUserInfoViewSet.as_view({'post': 'updateUserInfo'})),
     # 用户收藏列表
-    path('user/collectionList/', views.CollectionListViewSet.as_view({'post': 'collectionList'})),
+    path('user/collectionList', views.CollectionListViewSet.as_view({'post': 'collectionList'})),
     # 商品模块,分类商品列表
     path('goods/goodsList/', views.GoodsListViewSet.as_view({'get': 'goodsList'})),
     # 单个商品详情
     path('goods/goodsDetails', views.HomeViewSet.as_view({'post': 'getGoodsDetails'})),
     # 查询商品是否已收藏
-    path('user/queryCollection/', views.UserCollectionViewSet.as_view({'post': 'queryCollection'})),
+    path('user/queryCollection', views.UserCollectionViewSet.as_view({'post': 'queryCollection'})),
     # 加入到购物车
-    path('u-action/addToShopCart/', views.CartViewSet.as_view({'post': 'addToShopCart'})),
+    path('u-action/addToShopCart', views.CartViewSet.as_view({'post': 'addToShopCart'})),
     # 查询购物车数据
-    path('user/checkShopCart/', views.checkShopCartViewSet.as_view({'post': 'ShopCart'})),
+    path('user/checkShopCart', views.checkShopCartViewSet.as_view({'post': 'ShopCart'})),
     # 地址列表
-    path('user/addressList/', views.AddressListViewSet.as_view({'post': 'AddressList'})),
+    path('user/addressList', views.AddressListViewSet.as_view({'post': 'AddressList'})),
     # 获取订单列表
-    path('user/orderList/', views.orderListViewSet.as_view({'post': 'getOrderList'})),
+    path('user/orderList', views.orderListViewSet.as_view({'post': 'getOrderList'})),
     # 编辑收货地址
-    path('u-action/editAddress/', views.editAddressViewSet.as_view({'post': 'editAddress'})),
+    path('u-action/editAddress', views.editAddressViewSet.as_view({'post': 'editAddress'})),
     # 默认地址
-    path('user/defAddress/', views.getdefAddressViewSet.as_view({'post': 'defAddress'})),
+    path('user/defAddress', views.getdefAddressViewSet.as_view({'post': 'defAddress'})),
     # 删除购物车商品
-    path('u-action/delCartGoods/', views.delCartGoodsViewSet.as_view({'post': 'delCartGoods'})),
+    path('u-action/delCartGoods', views.delCartGoodsViewSet.as_view({'post': 'delCartGoods'})),
     # 商品收藏、取消
-    path('u-action/collection/', views.isCollectionsViewSet.as_view({'post': 'is_collection'})),
+    path('u-action/collection', views.isCollectionsViewSet.as_view({'post': 'is_collection'})),
     # 删除收货地址
-    path('u-action/delAddress/', views.delAddressViewSet.as_view({'post': 'delAddress'})),
+    path('u-action/delAddress', views.delAddressViewSet.as_view({'post': 'delAddress'})),
     # 提交订单
-    path('u-action/submitOrder/', views.submitOrderViewSet.as_view({'post': 'submitOrder'})),
+    path('u-action/submitOrder', views.submitOrderViewSet.as_view({'post': 'submitOrder'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
