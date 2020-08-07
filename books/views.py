@@ -178,8 +178,8 @@ class RegisterViewSet(ModelViewSet):
 
     def register(self, request):
         print(request.data)
-        name = request.data['name']
-        pwd = request.data['pwd']
+        name = request.data['username']
+        pwd = request.data['password']
         user = User.objects.values().filter(login_name=name)
         # 判断用户是否已经存在
         if user:
@@ -198,8 +198,8 @@ class LoginViewSet(ModelViewSet):
 
     def login(self, request):
         print(request.data)
-        name = request.data['name']
-        pwd = request.data['pwd']
+        name = request.data['username']
+        pwd = request.data['password']
         user = User.objects.values().filter(login_name=name, user_pwd=pwd)
         print(user[0])
         # 判断用户是否存在
@@ -241,10 +241,15 @@ class CollectionListViewSet(ModelViewSet):
         user_id = request.data['user_id']
         lists = User_collection.objects.values('order_id', 'is_deleted').filter(user_id=user_id)
         print(lists)
+        new_lists = []
+        for i in lists:
+            # print(i)
+            dic = {'goods_id': i['order_id'], 'is_deleted': i['is_deleted']}
+            new_lists.append(dic)
         # 判断是否存在收藏
         if lists:
             print("返回用户收藏成功")
-            return JsonResponse({'status': 200, 'data': list(lists)}, safe=False)
+            return JsonResponse({'status': 200, 'data': list(new_lists)}, safe=False)
         else:
             print("返回用户收藏失败")
             return JsonResponse({'status': 500, 'data': None}, safe=False)
