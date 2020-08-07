@@ -48,6 +48,14 @@ urlpatterns = [
     path('u-action/editAddress/', views.editAddressViewSet.as_view({'post': 'editAddress'})),
     # 默认地址
     path('user/defAddress/', views.getdefAddressViewSet.as_view({'post': 'defAddress'})),
+    # 删除购物车商品
+    path('u-action/delCartGoods/', views.delCartGoodsViewSet.as_view({'post': 'delCartGoods'})),
+    # 商品收藏、取消
+    path('u-action/collection/', views.isCollectionsViewSet.as_view({'post': 'is_collection'})),
+    # 删除收货地址
+    path('u-action/delAddress/', views.delAddressViewSet.as_view({'post': 'delAddress'})),
+    # 提交订单
+    path('u-action/submitOrder/', views.submitOrderViewSet.as_view({'post': 'submitOrder'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了

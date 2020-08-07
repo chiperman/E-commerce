@@ -114,7 +114,7 @@ class Cart(models.Model):
 
 # 订单表
 class Mall_order(models.Model):
-    order_id = models.IntegerField(auto_created=True, primary_key=True)
+    order_id = models.CharField(auto_created=True, primary_key=True,max_length=100)
     order_no = models.CharField(max_length=100, unique=True)
     user_id = models.CharField(max_length=100)
     # user = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -123,7 +123,7 @@ class Mall_order(models.Model):
     pay_type = models.CharField(max_length=100)
     pay_time = models.DateTimeField(auto_now_add=True)
     order_status = models.IntegerField(default=0)
-    extra_info = models.CharField(max_length=100)
+    extra_info = models.CharField(max_length=100, default="")
     is_deleted = models.IntegerField(default=0)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
