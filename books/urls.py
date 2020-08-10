@@ -56,6 +56,8 @@ urlpatterns = [
     path('u-action/delAddress', views.delAddressViewSet.as_view({'post': 'delAddress'})),
     # 提交订单
     path('u-action/submitOrder', views.submitOrderViewSet.as_view({'post': 'submitOrder'})),
+    # 分类
+    path('category-search', views.CategorySearchViewSet.as_view({'post': 'categorySearch'})),
 ]
 
 router = DefaultRouter()  # 括号不要忘了 ，不然执行不了
